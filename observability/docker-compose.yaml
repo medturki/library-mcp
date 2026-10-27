@@ -1,0 +1,41 @@
+# Local observability stack: OTel Collector -> Prometheus (metrics), Loki (logs), Tempo (traces) -> Grafana
+services:
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.158.0
+    command: ["--config=/etc/otelcol/collector.yaml"]
+    volumes: ["./collector.yaml:/etc/otelcol/collector.yaml:ro"]
+    ports:
+      - "14317:4317"   # OTLP gRPC  (agents on the host send here)
+      - "14318:4318"   # OTLP HTTP
+    depends_on: [tempo, loki]
+
+  prometheus:
+    image: prom/prometheus:v3.13.2
+    command:
+      - --config.file=/etc/prometheus/prometheus.yaml
+      - --enable-feature=exemplar-storage
+    volumes: ["./prometheus.yaml:/etc/prometheus/prometheus.yaml:ro"]
+    ports: ["9090:9090"]
+    depends_on: [otel-collector]
+
+  loki:
+    image: grafana/loki:3.7.6
+    command: ["-config.file=/etc/loki/loki.yaml"]
+    volumes: ["./loki.yaml:/etc/loki/loki.yaml:ro"]
+    ports: ["3100:3100"]
+
+  tempo:
+    image: grafana/tempo:3.0.2
+    command: ["-config.file=/etc/tempo.yaml"]
+    volumes: ["./tempo.yaml:/etc/tempo.yaml:ro"]
+    ports: ["3200:3200"]
+
+  grafana:
+    image: grafana/grafana:13.1.3
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin   # local lab only: no login screen
+    volumes:
+      - ./grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml:ro
+    ports: ["3000:3000"]
+    depends_on: [prometheus, loki, tempo]

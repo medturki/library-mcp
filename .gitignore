@@ -1,0 +1,21 @@
+# Build output
+target/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# OpenTelemetry agent binary (download with otel/download-agent.sh or .ps1)
+otel/*.jar
+
+# Secrets
+.env
+*.env

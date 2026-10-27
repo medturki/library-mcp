@@ -1,0 +1,31 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: library-assistant                # routed as lb://LIBRARY-ASSISTANT
+  ai:
+    anthropic:
+      api-key: ${ANTHROPIC_API_KEY}
+      chat:
+        model: ${ANTHROPIC_CHAT_MODEL:claude-sonnet-5-5}
+        max-tokens: 1500
+    mcp:
+      client:
+        name: library-assistant-client
+        type: ASYNC
+        request-timeout: 30s
+        streamable-http:
+          connections:
+            library:
+              url: ${LIBRARY_MCP_URL:http://localhost:8080/api/library}   # through the gateway
+              endpoint: /mcp
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    initial-instance-info-replication-interval-seconds: 5
+  instance:
+    prefer-ip-address: true
+    ip-address: 127.0.0.1

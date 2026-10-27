@@ -1,0 +1,11 @@
+global:
+  scrape_interval: 10s
+
+storage:
+  exemplars:
+    max_exemplars: 100000
+
+scrape_configs:
+  - job_name: otel-collector
+    static_configs:
+      - targets: ["otel-collector:9464"]

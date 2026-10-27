@@ -1,0 +1,11 @@
+<configuration>
+    <!-- trace_id / span_id are filled by the OpenTelemetry Java agent (empty without it) -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level trace_id=%X{trace_id} span_id=%X{span_id} %logger{30} : %m%n</pattern>
+        </encoder>
+    </appender>
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>

@@ -1,0 +1,25 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: library-service                  # routed as lb://LIBRARY-SERVICE
+  ai:
+    mcp:
+      server:
+        name: library-mcp-server
+        version: 1.0.0
+        type: ASYNC
+        protocol: STATELESS                # no session: any instance can answer any call
+        instructions: "Library catalog: search books and check availability."
+        streamable-http:
+          mcp-endpoint: /mcp
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    initial-instance-info-replication-interval-seconds: 5
+  instance:
+    prefer-ip-address: true
+    ip-address: 127.0.0.1

@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    loadbalancer:
+      cache:
+        ttl: 5s                              # default 35s: see new instances sooner
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    registry-fetch-interval-seconds: 5     # default 30s
+  instance:
+    prefer-ip-address: true
+    ip-address: 127.0.0.1                  # local lab: avoid virtual network adapters
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+  endpoint:
+    gateway:
+      access: READ_ONLY                    # GET /actuator/gateway/routes
